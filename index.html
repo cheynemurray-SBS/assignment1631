@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Homework Set 1: Foundations of Data-Driven Decision Making</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --surface:#f4f5f7; --surface-2:#eceef1; --ink:#1d1f24; --muted:#5b6470;
+  --line:#d9dce1; --maroon:#8c1d2c; --maroon-soft:#f6e9eb; --on-maroon:#ffffff;
+  --seg1:#8c1d2c; --seg2:#a8394a; --seg3:#5b6470; --seg4:#7b8591; --seg5:#b98a3e; --seg6:#9a6f2c;
+  --ok:#2f6b4f;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16171b; --surface:#1f2126; --surface-2:#272a30; --ink:#eceef1; --muted:#a3aab4;
+    --line:#353840; --maroon:#e0788a; --maroon-soft:#3a1e24; --on-maroon:#16171b;
+    --seg1:#c94a5e; --seg2:#e0788a; --seg3:#7f8996; --seg4:#a3aab4; --seg5:#d1a85c; --seg6:#b88d45;
+    --ok:#6fbf95; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16171b; --surface:#1f2126; --surface-2:#272a30; --ink:#eceef1; --muted:#a3aab4;
+  --line:#353840; --maroon:#e0788a; --maroon-soft:#3a1e24; --on-maroon:#16171b;
+  --seg1:#c94a5e; --seg2:#e0788a; --seg3:#7f8996; --seg4:#a3aab4; --seg5:#d1a85c; --seg6:#b88d45;
+  --ok:#6fbf95; color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 "Public Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+h1,h2,h3{font-family:"Newsreader",Georgia,"Times New Roman",serif;font-weight:600;line-height:1.15;margin:0}
+a{color:var(--maroon)}
+:focus-visible{outline:3px solid var(--maroon);outline-offset:2px;border-radius:4px}
+.wrap{max-width:960px;margin:0 auto;padding:0 1.25rem}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:1rem;height:56px;overflow-x:auto;scrollbar-width:none}
+.nav .wrap::-webkit-scrollbar{display:none}
+.nav .course{font-weight:700;color:var(--maroon);white-space:nowrap;font-size:.9rem}
+.nav a.l{color:var(--muted);text-decoration:none;font-size:.9rem;white-space:nowrap;padding:.25rem 0}
+.nav a.l:hover{color:var(--ink)}
+.nav .prog{margin-left:auto;white-space:nowrap;font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:.5rem}
+.nav .prog .bar{width:72px;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.nav .prog .bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+
+/* hero */
+header.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--line)}
+.kicker{color:var(--maroon);font-weight:600;font-size:.95rem;margin:0 0 .75rem}
+.hero h1{font-size:clamp(2.1rem,5vw,3.4rem);max-width:16ch;letter-spacing:-.01em}
+.hero p.lede{font-size:1.15rem;color:var(--muted);max-width:60ch;margin:1.25rem 0 2rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.facts div{background:var(--bg);padding:1rem 1.1rem}
+.facts dt{font-size:.82rem;color:var(--muted);margin-bottom:.2rem}
+.facts dd{margin:0;font-weight:600}
+
+section{padding:3rem 0;border-bottom:1px solid var(--line)}
+section h2{font-size:clamp(1.6rem,3.2vw,2.1rem);margin-bottom:.6rem}
+section > .wrap > p.intro{color:var(--muted);max-width:62ch;margin:0 0 1.75rem}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem}
+.rule{border-left:3px solid var(--maroon);padding:.2rem 0 .2rem 1rem}
+.rule h3{font-family:"Public Sans",system-ui,sans-serif;font-size:1rem;font-weight:700;margin-bottom:.35rem}
+.rule ul{margin:0;padding-left:1.1rem;color:var(--ink)}
+.rule li{margin:.2rem 0}
+.honesty{margin-top:2rem;background:var(--maroon-soft);border-radius:10px;padding:1.25rem 1.4rem}
+.honesty strong{color:var(--maroon)}
+code,.file{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.9em;background:var(--surface);padding:.1em .4em;border-radius:4px;word-break:break-all}
+
+/* issues tabs */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.tab{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:.55rem 1.1rem;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--maroon);border-color:var(--maroon);color:var(--on-maroon)}
+.panel{background:var(--surface);border-radius:12px;padding:1.6rem 1.6rem 1.4rem}
+.panel[hidden]{display:none}
+.panel h3{font-size:1.5rem;margin-bottom:.75rem}
+.panel .ctx{max-width:65ch}
+.panel .task{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);max-width:65ch}
+.args{display:grid;gap:.75rem;margin:1rem 0 0}
+.arg{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.9rem 1rem}
+.arg b{color:var(--maroon)}
+
+/* points bar */
+.pts{margin:0 0 2rem}
+.pts .bar{display:flex;height:56px;border-radius:10px;overflow:hidden;gap:2px}
+.pts button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;transition:filter .2s,transform .2s}
+.pts button:hover,.pts button:focus-visible{filter:brightness(1.12)}
+.pts button:focus-visible{outline:3px solid var(--ink);outline-offset:-3px}
+.pts .legend{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-top:.5rem}
+
+/* components */
+.comp{border:1px solid var(--line);border-radius:12px;margin-bottom:.9rem;background:var(--bg);overflow:hidden}
+.comp summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;padding:1.1rem 1.25rem}
+.comp summary::-webkit-details-marker{display:none}
+.comp .n{width:2.2rem;height:2.2rem;border-radius:50%;display:grid;place-items:center;font-family:"Newsreader",Georgia,serif;font-weight:600;font-size:1.2rem;color:#fff}
+.comp .t{font-weight:700;font-size:1.05rem}
+.comp .t small{display:block;font-weight:400;color:var(--muted);font-size:.9rem}
+.comp .p{font-weight:700;white-space:nowrap}
+.comp .p::after{content:"";display:inline-block;width:.5rem;height:.5rem;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg) translateY(-3px);margin-left:.9rem;transition:transform .2s}
+.comp[open] .p::after{transform:rotate(-135deg) translateY(-1px)}
+.comp .body{padding:0 1.25rem 1.4rem 4.45rem;max-width:calc(65ch + 4.45rem)}
+.comp .body ul{padding-left:1.1rem;margin:.4rem 0}
+.comp .body li{margin:.25rem 0}
+.comp .ex{background:var(--surface);border-radius:8px;padding:.85rem 1rem;margin:.9rem 0 0;font-size:.95rem}
+.comp .ex b{display:block;font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:.2rem}
+.comp.flash{box-shadow:0 0 0 3px var(--maroon)}
+@media (max-width:600px){.comp .body{padding-left:1.25rem}}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.9rem 0;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:.65rem .8rem;border-bottom:1px solid var(--line)}
+th{background:var(--surface);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.vt{min-width:760px}
+
+/* rubric */
+.bands{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-top:1.5rem}
+.band{border-radius:10px;padding:1rem 1.1rem;background:var(--surface)}
+.band .r{font-family:"Newsreader",Georgia,serif;font-size:1.5rem;font-weight:600}
+.band .g{font-size:.85rem;color:var(--muted);margin-bottom:.35rem}
+.band p{margin:0;font-size:.92rem}
+.band.top{background:var(--maroon-soft)}
+.band.top .r{color:var(--maroon)}
+
+/* mistakes */
+.mist{display:grid;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.mist div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:1.5rem;padding:1rem 1.25rem;border-bottom:1px solid var(--line)}
+.mist div:last-child{border-bottom:0}
+.mist div:nth-child(odd){background:var(--surface)}
+.mist b{font-weight:600}
+.mist span{color:var(--muted)}
+@media (max-width:600px){.mist div{grid-template-columns:1fr;gap:.25rem}}
+
+/* checklist */
+.check{display:grid;gap:.5rem;max-width:720px}
+.check label{display:flex;gap:.85rem;align-items:flex-start;padding:.75rem 1rem;border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:background .2s,border-color .2s}
+.check input{appearance:none;flex:none;width:1.3rem;height:1.3rem;margin:.1rem 0 0;border:2px solid var(--muted);border-radius:5px;display:grid;place-items:center;cursor:pointer}
+.check input:checked{background:var(--ok);border-color:var(--ok)}
+.check input:checked::after{content:"";width:.35rem;height:.65rem;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check label:has(input:checked){background:var(--surface);border-color:transparent}
+.check label:has(input:checked) span{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.check .sub{margin-left:2.15rem}
+.checkhead{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem}
+.checkhead .count{font-weight:700}
+.btn{font:inherit;font-weight:600;font-size:.9rem;background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:.4rem .9rem;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--muted)}
+.done-msg{color:var(--ok);font-weight:600}
+
+/* tips & resources */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem}
+.two h3{font-size:1.3rem;margin-bottom:.6rem}
+.two ul{padding-left:1.1rem;margin:0}
+.two li{margin:.35rem 0}
+.do{display:grid;gap:.6rem;margin-top:.5rem}
+.do div{font-size:.95rem;padding:.7rem .9rem;border-radius:8px;background:var(--surface)}
+.do s{color:var(--muted)}
+
+footer{padding:2.5rem 0 3rem;color:var(--muted);font-size:.9rem}
+@media print{.nav,.btn{display:none}.comp .body{display:block}details>*{display:block}}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Assignment sections">
+  <div class="wrap">
+    <span class="course">BUAD-631-38</span>
+    <a class="l" href="#rules">Requirements</a>
+    <a class="l" href="#issues">Issues</a>
+    <a class="l" href="#components">Components</a>
+    <a class="l" href="#rubric">Rubric</a>
+    <a class="l" href="#checklist">Checklist</a>
+    <span class="prog" aria-live="polite"><span class="bar"><i id="navbar"></i></span><span id="navcount">0 of 0</span></span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Homework Set 1, Data-Driven Decision Making</p>
+    <h1>Defend a position with data you plan to collect</h1>
+    <p class="lede">Pick one issue, define the problem precisely, and lay out how you would gather, check, display, and analyze the data that settles it. No statistics required. This is an exercise in original thinking.</p>
+    <dl class="facts">
+      <div><dt>Due</dt><dd>Sun, Nov 1, 2026, 11:59pm</dd></div>
+      <div><dt>Points</dt><dd>40 (Issue Analysis)</dd></div>
+      <div><dt>Course weight</dt><dd>5% of final grade</dd></div>
+      <div><dt>Length</dt><dd>3 double-spaced pages max</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main>
+<section id="rules">
+  <div class="wrap">
+    <h2>Before you start</h2>
+    <p class="intro">Submissions that miss these requirements lose points before the content is even read.</p>
+    <div class="rules">
+      <div class="rule">
+        <h3>File and submission</h3>
+        <ul>
+          <li>One Word document (.docx), uploaded to the Canvas assignment link</li>
+          <li>Name it <span class="file">Lastname-Firstname-631-38-Homework1.docx</span></li>
+          <li>Example: <span class="file">Jones-Robert-631-38-Homework1.docx</span></li>
+          <li>No hard copies</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <h3>Formatting</h3>
+        <ul>
+          <li>Maximum 3 double-spaced pages, not counting the title page</li>
+          <li>APA format: 12-point Times New Roman, 1-inch margins, page numbers</li>
+          <li>Use tables and bullets where they make the work easier to scan</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <h3>Title page</h3>
+        <ul>
+          <li>Your full name</li>
+          <li>The campus you attend</li>
+          <li>The date submitted</li>
+          <li>Your name appears on the title page only</li>
+        </ul>
+      </div>
+    </div>
+    <div class="honesty">
+      <strong>Academic honesty.</strong> This is an individual assignment. Don’t get help from anyone or work with others, and don’t read articles related to your chosen issue. There are many correct answers; your job is to present a plausible, data-driven position. Questions go to the instructor by email or during office hours.
+    </div>
+  </div>
+</section>
+
+<section id="issues">
+  <div class="wrap">
+    <h2>Choose one issue</h2>
+    <p class="intro">Pick the one you care about most. You’ll write better when the question matters to you.</p>
+    <div class="tabs" role="tablist" aria-label="Issues">
+      <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true">Issue 1: Fuel efficiency and safety</button>
+      <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1">Issue 2: Value of an MBA</button>
+      <button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">Issue 3: Deceptive advertising</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p1" aria-labelledby="t1">
+      <h3>Fuel efficiency standards and safety</h3>
+      <p class="ctx">One recent proposal would roll back fuel efficiency standards for newer automobiles. The main argument for the move centers on “safety and saving lives.” Three lines of argument support it:</p>
+      <div class="args">
+        <div class="arg"><b>Argument A.</b> As cars and trucks become more fuel-efficient, the cost of driving goes down, people drive more, and road fatalities increase.</div>
+        <div class="arg"><b>Argument B.</b> More fuel-efficient cars cost more, so people keep their cars longer and miss out on the safety features of newer cars, which increases fatalities.</div>
+        <div class="arg"><b>Argument C.</b> Fuel-efficient vehicles are lighter and take more damage in accidents, but they also do less damage to other vehicles. Depending on which effect is larger, fatalities could rise.</div>
+      </div>
+      <p class="task"><strong>Your task:</strong> pick only one line of argument (A, B, or C), define the problem clearly, and present a data-driven argument that either defends or refutes it.</p>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden>
+      <h3>Value of an MBA degree</h3>
+      <p class="ctx">You’re convinced that an MBA makes monetary sense in the long run for people like you. Many of your friends and colleagues aren’t convinced.</p>
+      <p class="task"><strong>Your task:</strong> for the benefit of your friends and colleagues, define the problem clearly and present a data-driven defense of your position.</p>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+      <h3>Deceptive advertising claims</h3>
+      <p class="ctx">A staff attorney at the Federal Trade Commission has been assigned a deceptive-advertising case. The firm readily admits its advertising claim was false. Its defense: the claim was so blatantly false that no one would be fooled. It was meant to amuse, not deceive.</p>
+      <p class="task"><strong>Your task:</strong> the attorney has asked you to help evaluate whether consumers were misled. Define the problem clearly and present a data-driven approach to evaluating the claim.</p>
+    </div>
+  </div>
+</section>
+
+<section id="components">
+  <div class="wrap">
+    <h2>Six required components</h2>
+    <p class="intro">Address all six, in order. Each one builds on the last, so get the problem definition right first. Select a segment to jump to that component.</p>
+
+    <div class="pts">
+      <div class="bar" id="ptsbar">
+        <button style="flex:8;background:var(--seg1)" data-go="c1" aria-label="Problem definition, 8 points">8</button>
+        <button style="flex:10;background:var(--seg2)" data-go="c2" aria-label="Data and variables, 10 points">10</button>
+        <button style="flex:8;background:var(--seg3)" data-go="c3" aria-label="Data collection plan, 8 points">8</button>
+        <button style="flex:6;background:var(--seg4)" data-go="c4" aria-label="Data quality, 6 points">6</button>
+        <button style="flex:4;background:var(--seg5)" data-go="c5" aria-label="Data display, 4 points">4</button>
+        <button style="flex:4;background:var(--seg6)" data-go="c6" aria-label="Data analysis, 4 points">4</button>
+      </div>
+      <div class="legend"><span>Problem definition</span><span>40 points total</span><span>Analysis</span></div>
+    </div>
+
+    <details class="comp" id="c1" open>
+      <summary><span class="n" style="background:var(--seg1)">1</span><span class="t">Problem definition<small>What exactly will the data show?</small></span><span class="p">8 pts</span></summary>
+      <div class="body">
+        <ul>
+          <li>State precisely what you want to show with evidence from data and analysis</li>
+          <li>Write it as a specific question or hypothesis, in one or two sentences</li>
+          <li>Frame it in terms of measurable variables, and make it testable</li>
+          <li>Save the detail for later sections</li>
+        </ul>
+        <div class="ex"><b>Structure to follow</b>Does [independent variable] affect [dependent variable] in [specific population or context]?</div>
+      </div>
+    </details>
+
+    <details class="comp" id="c2">
+      <summary><span class="n" style="background:var(--seg2)">2</span><span class="t">Data and variables<small>What will you measure, and how?</small></span><span class="p">10 pts</span></summary>
+      <div class="body">
+        <p style="margin-top:0">Identify four to six variables that tie directly to your problem. For each one, give:</p>
+        <ul>
+          <li>The variable name and an operational definition specific enough that someone else could collect it</li>
+          <li>Type: qualitative (nominal or ordinal) or quantitative (continuous or discrete)</li>
+          <li>Measurement scale: nominal, ordinal, interval, or ratio</li>
+          <li>Units, such as dollars, years, miles per gallon, or yes/no</li>
+          <li>Why the variable is needed for your study</li>
+          <li>Three to five made-up example values</li>
+        </ul>
+        <div class="scroll">
+          <table class="vt">
+            <thead><tr><th>Variable</th><th>Definition</th><th>Type</th><th>Scale</th><th>Units</th><th>Why needed</th><th>Example values</th></tr></thead>
+            <tbody><tr><td>Age</td><td>Participant’s age in years</td><td>Quantitative, discrete</td><td>Ratio</td><td>Years</td><td>Controls for age effects on driving behavior</td><td>25, 34, 42, 55, 61</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+    <details class="comp" id="c3">
+      <summary><span class="n" style="background:var(--seg3)">3</span><span class="t">Data collection plan<small>Instructions someone else could follow</small></span><span class="p">8 pts</span></summary>
+      <div class="body">
+        <p style="margin-top:0">Write a series of numbered instructions for the person who will actually collect the data. They should be able to follow them without asking you anything. Include:</p>
+        <ul>
+          <li><strong>Population of interest:</strong> who or what will be studied</li>
+          <li><strong>Sampling method:</strong> simple random, stratified, cluster, or other, with a justification</li>
+          <li><strong>Sample size:</strong> how many observations, and why that number</li>
+          <li><strong>Method:</strong> survey, experiment, observation, or secondary data. For a survey, list the key questions; for an experiment, what’s manipulated and controlled</li>
+          <li><strong>Timeframe:</strong> when and for how long data is collected</li>
+          <li><strong>Step-by-step procedure</strong></li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="comp" id="c4">
+      <summary><span class="n" style="background:var(--seg4)">4</span><span class="t">Data quality justification<small>Why the data will be trustworthy</small></span><span class="p">6 pts</span></summary>
+      <div class="body">
+        <p style="margin-top:0">This is about avoiding bias and error in collection, not just relevance. Address all five dimensions:</p>
+        <ul>
+          <li><strong>Accuracy:</strong> how you’ll keep the data correct and free from measurement error</li>
+          <li><strong>Completeness:</strong> how you’ll minimize missing data</li>
+          <li><strong>Consistency:</strong> how you’ll collect data the same way across every observation</li>
+          <li><strong>Timeliness:</strong> whether the timeframe fits your question</li>
+          <li><strong>Relevance:</strong> how the data directly answers your problem definition</li>
+        </ul>
+        <p>Then discuss likely sources of bias and how you’ll reduce them, the reliability of your measurement methods, and validity: are you measuring what you intend to measure?</p>
+      </div>
+    </details>
+
+    <details class="comp" id="c5">
+      <summary><span class="n" style="background:var(--seg5)">5</span><span class="t">Data display plan<small>A chart that answers the question</small></span><span class="p">4 pts</span></summary>
+      <div class="body">
+        <p style="margin-top:0">Describe at least one visualization:</p>
+        <ul>
+          <li>The chart type, such as bar chart, histogram, scatter plot, or box plot</li>
+          <li>What goes on each axis</li>
+          <li>The comparison or pattern it reveals</li>
+          <li>Why it suits your data and question</li>
+        </ul>
+        <p>A sketch is optional; hand-drawn is fine.</p>
+        <div class="ex"><b>Example</b>A side-by-side box plot comparing annual salaries (y-axis) between MBA holders and non-MBA holders (x-axis), showing the difference in earnings distributions between the two groups.</div>
+      </div>
+    </details>
+
+    <details class="comp" id="c6">
+      <summary><span class="n" style="background:var(--seg6)">6</span><span class="t">Data analysis plan<small>What would prove the claim?</small></span><span class="p">4 pts</span></summary>
+      <div class="body">
+        <p style="margin-top:0">You haven’t studied specific analyses yet, so you don’t need to name one. Describe in plain language how the data would answer your problem:</p>
+        <ul>
+          <li>What comparison you’re making: two groups, a relationship, a trend</li>
+          <li>What result would count as evidence for your position</li>
+          <li>What pattern would support your hypothesis, and what you’d need to prove or disprove</li>
+        </ul>
+        <div class="ex"><b>Example</b>Show that the average salary of MBA holders is substantially higher than that of non-MBA holders, even after accounting for years of experience and industry, and that the difference is large enough to offset the cost and time of the program.</div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="rubric">
+  <div class="wrap">
+    <h2>How it’s graded</h2>
+    <p class="intro">Each component is scored against the criteria below.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Component</th><th>Points</th><th>What earns full credit</th></tr></thead>
+        <tbody>
+          <tr><td>1. Problem definition</td><td>8</td><td>Clear, specific, testable problem in one or two sentences; framed in measurable variables; directly addresses the chosen issue</td></tr>
+          <tr><td>2. Variables specification</td><td>10</td><td>Four to six variables, each with a clear operational definition, correct type and scale, appropriate units, justification, and example values; all clearly related to the problem</td></tr>
+          <tr><td>3. Data collection plan</td><td>8</td><td>Detailed step-by-step instructions; justified sampling method; appropriate sample size; feasible method someone else could follow</td></tr>
+          <tr><td>4. Data quality justification</td><td>6</td><td>All five quality dimensions; bias mitigation; reliability and validity of measurements</td></tr>
+          <tr><td>5. Data display plan</td><td>4</td><td>At least one appropriate visualization, with a clear explanation of what it shows</td></tr>
+          <tr><td>6. Data analysis plan</td><td>4</td><td>Plain-language approach; what counts as evidence; what must be proven; logical link to the problem</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>40</strong></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bands">
+      <div class="band top"><div class="r">36–40</div><div class="g">Outstanding, 90–100%</div><p>Exceptional understanding; every component thorough; professional presentation with insightful connections.</p></div>
+      <div class="band"><div class="r">32–35</div><div class="g">Excellent, 80–89%</div><p>Strong understanding; all components well addressed with minor gaps.</p></div>
+      <div class="band"><div class="r">28–31</div><div class="g">Good, 70–79%</div><p>Adequate understanding; most components addressed, with some gaps in detail or clarity.</p></div>
+      <div class="band"><div class="r">Below 28</div><div class="g">Needs work, under 70%</div><p>Significant gaps, an unclear problem definition, or weak connections between components.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="mistakes">
+  <div class="wrap">
+    <h2>Common mistakes</h2>
+    <p class="intro">These cost the most points on past submissions.</p>
+    <div class="mist">
+      <div><b>Unclear problem statement</b><span>State it as a question in terms of specific variables, in one or two sentences.</span></div>
+      <div><b>Problem statement too long</b><span>If it runs past two sentences, the problem isn’t thought through yet. Be concise and precise.</span></div>
+      <div><b>Missing one of the six components</b><span>Use the checklist below before you submit.</span></div>
+      <div><b>Written like a research paper</b><span>Use bullets and tables where they fit. Stay concise and organized.</span></div>
+      <div><b>Variables don’t match the problem</b><span>Every variable in component 2 should clearly serve the question in component 1.</span></div>
+      <div><b>Confusing relevance with quality</b><span>Component 4 is about avoiding bias and error in collection, not only whether the data is relevant.</span></div>
+      <div><b>Vague analysis plan</b><span>Say what you’d compare, what counts as evidence, and what pattern would support your hypothesis.</span></div>
+      <div><b>Missing classifications</b><span>Classify every variable as qualitative or quantitative and give its measurement scale.</span></div>
+      <div><b>No example values</b><span>Include three to five made-up values per variable.</span></div>
+      <div><b>Collection plan too general</b><span>Write instructions detailed enough that someone could follow them without asking questions.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="checklist">
+  <div class="wrap">
+    <h2>Submission checklist</h2>
+    <p class="intro">Check items off as you go. Your progress is saved in this browser.</p>
+    <div class="checkhead">
+      <span class="count" id="count">0 of 0 complete</span>
+      <button class="btn" id="reset" type="button">Clear checklist</button>
+      <span class="done-msg" id="done" hidden>Ready to upload to Canvas.</span>
+    </div>
+    <div class="check" id="checks">
+      <label><input type="checkbox" data-k="file"><span>Word document named <span class="file">Lastname-Firstname-631-38-Homework1.docx</span></span></label>
+      <label><input type="checkbox" data-k="title"><span>Title page with name, campus, and date; name on the title page only</span></label>
+      <label><input type="checkbox" data-k="issue"><span>One issue selected (1, 2, or 3)</span></label>
+      <label class="sub"><input type="checkbox" data-k="c1"><span>1. Clear problem definition in one or two sentences</span></label>
+      <label class="sub"><input type="checkbox" data-k="c2"><span>2. Variables table with all required information</span></label>
+      <label class="sub"><input type="checkbox" data-k="c3"><span>3. Step-by-step data collection plan</span></label>
+      <label class="sub"><input type="checkbox" data-k="c4"><span>4. Data quality justification covering all five dimensions</span></label>
+      <label class="sub"><input type="checkbox" data-k="c5"><span>5. Data display plan</span></label>
+      <label class="sub"><input type="checkbox" data-k="c6"><span>6. Data analysis plan</span></label>
+      <label><input type="checkbox" data-k="len"><span>Three double-spaced pages or fewer, not counting the title page</span></label>
+      <label><input type="checkbox" data-k="apa"><span>APA format followed</span></label>
+      <label><input type="checkbox" data-k="proof"><span>Proofread for clarity, grammar, and completeness</span></label>
+      <label><input type="checkbox" data-k="orig"><span>No references to outside articles; original thinking only</span></label>
+      <label><input type="checkbox" data-k="up"><span>Uploaded to Canvas before Sun, Nov 1 at 11:59pm</span></label>
+    </div>
+  </div>
+</section>
+
+<section id="tips">
+  <div class="wrap">
+    <h2>Tips and resources</h2>
+    <div class="two">
+      <div>
+        <h3>Think like a data scientist</h3>
+        <ul>
+          <li>What would you need to measure, and how would you measure it?</li>
+          <li>What result would prove your point?</li>
+          <li>What objections or biases could someone raise, and how will you answer them?</li>
+          <li>Connect every variable, collection step, and analysis back to your problem.</li>
+        </ul>
+        <div class="do">
+          <div><s>“Measure success”</s> becomes “measure average salary in dollars.”</div>
+          <div><s>“Survey people”</s> becomes “randomly select 500 MBA graduates from the classes of 2015–2020.”</div>
+        </div>
+      </div>
+      <div>
+        <h3>Review from Week 1</h3>
+        <ul>
+          <li>Qualitative vs. quantitative; continuous vs. discrete</li>
+          <li>Nominal, ordinal, interval, and ratio scales</li>
+          <li>Population vs. sample, and sampling methods</li>
+          <li>Utts/Heckard Chapters 1, 5, 6 and Sections 2.1–2.2</li>
+          <li>Ayers Introduction and Chapters 1–2</li>
+          <li><a href="https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/general_format.html" target="_blank" rel="noopener">Purdue OWL APA general format guide</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">University of Redlands School of Business. BUAD-631-38: Data Driven Decision-Making, Professor Murray. Questions: <a href="mailto:cheyne_murray@redlands.edu">cheyne_murray@redlands.edu</a></div>
+</footer>
+
+<script>
+(function(){
+  // Tabs
+  const tabs=[...document.querySelectorAll('.tab')];
+  function select(t,focus){
+    tabs.forEach(x=>{const on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden=!on;});
+    if(focus)t.focus();
+  }
+  tabs.forEach((t,i)=>{
+    t.addEventListener('click',()=>select(t));
+    t.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();
+        select(tabs[(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length],true);}
+    });
+  });
+
+  // Points bar jumps to and opens a component
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
+    const d=document.getElementById(b.dataset.go);
+    d.open=true; d.scrollIntoView({block:'start'});
+    d.classList.add('flash'); setTimeout(()=>d.classList.remove('flash'),1200);
+  }));
+
+  // Checklist with per-browser memory
+  const KEY='buad631-38-hw1-checklist';
+  const boxes=[...document.querySelectorAll('#checks input')];
+  let saved={};
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){saved={};}
+  boxes.forEach(b=>{b.checked=!!saved[b.dataset.k];});
+  function update(){
+    const n=boxes.filter(b=>b.checked).length, t=boxes.length;
+    document.getElementById('count').textContent=n+' of '+t+' complete';
+    document.getElementById('navcount').textContent=n+' of '+t;
+    document.getElementById('navbar').style.width=(n/t*100)+'%';
+    document.getElementById('done').hidden=n!==t;
+    const s={}; boxes.forEach(b=>{if(b.checked)s[b.dataset.k]=1;});
+    try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}
+  }
+  boxes.forEach(b=>b.addEventListener('change',update));
+  document.getElementById('reset').addEventListener('click',()=>{boxes.forEach(b=>b.checked=false);update();});
+  update();
+})();
+</script>
+</body>
+</html>
